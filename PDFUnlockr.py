@@ -4,18 +4,15 @@ import os
 from pdf_cracker import crack_pdf, save_session
 
 def load_session():
-    # Load session data from the saved JSON file if available.
     if os.path.exists('session_data.json'):
         try:
             with open('session_data.json', 'r') as file:
                 session_data = json.load(file)
                 
-                # Check if session_data is None or missing required keys
                 if session_data is None:
                     print("Error: session_data.json is empty or unreadable.")
                     return None
                 
-                # Verify that paths exist to avoid issues with missing files
                 pdf_path = session_data.get("pdf_path")
                 wordlist_path = session_data.get("wordlist_path")
                 
@@ -56,7 +53,6 @@ def main():
     args = parser.parse_args()
     
     if args.resume:
-        # Load the saved session
         session_data = load_session()
         if session_data is None:
             print("Cannot resume; please ensure the session files are available.")
@@ -70,7 +66,6 @@ def main():
         start_index = 0
         start_percentage = 0
 
-    # Ensure that required arguments are provided when not resuming
     if not args.resume:
         if not args.file or not args.wordlist:
             parser.error("the following arguments are required: -f or --file, -w or --wordlist")
@@ -82,7 +77,6 @@ def main():
             print("Please specify a password type (--owner-password or --user-password).")
             return
 
-    # Load the wordlist
     try:
         with open(args.wordlist, "r", encoding="utf-8", errors="ignore") as f:
             wordlist = [line.strip() for line in f if line.strip()]
@@ -90,10 +84,8 @@ def main():
         print(f"Error: The wordlist file '{args.wordlist}' could not be found.")
         return
 
-    # Determine password type
     password_type = "owner" if args.owner_password else "user"
 
-    # Attempt to crack the PDF with resume capability
     success = crack_pdf(
         args.file, 
         wordlist, 
@@ -105,7 +97,6 @@ def main():
         start_percentage=start_percentage  # Pass the starting percentage for better tracking
     )
     
-    # Print result message only if cracking was unsuccessful
     if not success:
         print("Failed to unlock the PDF. Password not found in the wordlist.")
 
