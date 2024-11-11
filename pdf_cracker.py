@@ -1,4 +1,3 @@
-
 from rich.console import Console
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn
 from datetime import timedelta
@@ -7,8 +6,8 @@ import json
 import pikepdf
 import sys
 import time
-import psutil  # Ensure `psutil` is installed for system information
-import os  # Import os for permission checking
+import psutil
+import os
 
 console = Console()
 
@@ -46,9 +45,9 @@ def format_time(seconds):
 
 def get_optimal_settings():
     cpu_count_value = cpu_count()
-    available_memory = psutil.virtual_memory().available / (1024 ** 2)  # Convert to MB
+    available_memory = psutil.virtual_memory().available / (1024 ** 2)
     optimal_num_workers = cpu_count_value
-    optimal_batch_size = int(1000 * (available_memory / 1024))  # Approx. 1000 per GB of available memory
+    optimal_batch_size = int(1000 * (available_memory / 1024))
     return cpu_count_value, available_memory, optimal_num_workers, optimal_batch_size
 
 def crack_pdf(pdf_path, wordlist, password_type, start_index=0, num_workers=None, batch_size=2000, wordlist_path=None, start_percentage=0):
@@ -59,7 +58,6 @@ def crack_pdf(pdf_path, wordlist, password_type, start_index=0, num_workers=None
     if batch_size is None:
         batch_size = recommended_batch_size
 
-    # Display CPU and memory info along with recommended settings
     console.print(f"[bold cyan]System Information:[/bold cyan] [green]CPU Cores:[/green] {cpu_count_value}, [green]Available Memory:[/green] {available_memory:.2f} MB")
     console.print(f"[bold cyan]Optimal Settings:[/bold cyan] Based on your CPU and memory, the optimal settings for best performance are: [green]--num-workers[/green] {recommended_workers} and [green]--batch-size[/green] {recommended_batch_size}")
 
@@ -136,7 +134,6 @@ def save_session(pdf_path, wordlist_path, current_index, progress_percentage=0):
         'progress_percentage': progress_percentage
     }
 
-    # Check for write permissions in the current directory
     if not os.access(".", os.W_OK):
         print("Error: Unable to save session. Write permission is denied in the current directory.")
         return
